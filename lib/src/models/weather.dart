@@ -15,7 +15,7 @@ class WeatherResponse {
     this.wind,
     this.clouds,
     this.dt,
-    this.sys,
+    required this.sys,
     this.timezone,
     required this.id,
     required this.name,
@@ -30,7 +30,7 @@ class WeatherResponse {
   Wind? wind;
   Clouds? clouds;
   int? dt;
-  Sys? sys;
+  Sys sys;
   int? timezone;
   int id;
   String name;
@@ -62,7 +62,7 @@ class WeatherResponse {
         "wind": wind!.toJson(),
         "clouds": clouds!.toJson(),
         "dt": dt,
-        "sys": sys!.toJson(),
+        "sys": sys.toJson(),
         "timezone": timezone,
         "id": id,
         "name": name,
@@ -146,14 +146,14 @@ class Sys {
   Sys({
     this.type,
     this.id,
-    this.country,
+    required this.country,
     required this.sunrise,
     required this.sunset,
   });
 
   int? type;
   int? id;
-  String? country;
+  String country;
   int sunrise;
   int sunset;
 

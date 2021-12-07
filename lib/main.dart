@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wheater/src/models/weather_provider.dart';
 import 'package:wheater/src/pages/main_page.dart';
 
 void main() => runApp(MyApp());
@@ -9,7 +11,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Material App',
-      home: MainPage(),
+      home: ChangeNotifierProvider(
+        create: (_)=>WeatherProvider(),
+        child: MainPage()),
     );
   }
 }

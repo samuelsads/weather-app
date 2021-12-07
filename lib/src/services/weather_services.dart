@@ -6,11 +6,12 @@ class WeatherService {
   final baseUrl = 'https://api.openweathermap.org/data/2.5/weather?';
   final _dio  = Dio();
 
-  Future<WeatherResponse> getWeatherByZipCode(int zipCode) async {
+  Future<WeatherResponse> getWeatherByZipCode(int zipCode, String countryCode) async {
     if(zipCode ==0){
       zipCode = 24500;
+      countryCode = "MX";
     }
-    final url  = '${this.baseUrl}zip=${zipCode},MX&appid=${this.apiKey}&units=metric&lang=es';
+    final url  = '${this.baseUrl}zip=${zipCode},${countryCode}&appid=${this.apiKey}&units=metric&lang=es';
     final resp  = await this._dio.get(url);
     print(resp);
     final data  = WeatherResponse.fromJson(resp.data);
