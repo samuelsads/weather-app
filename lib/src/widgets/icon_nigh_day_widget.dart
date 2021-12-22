@@ -9,10 +9,9 @@ class IconNighDay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DateTime now = DateTime.now();
 
     return ZoomIn(
-      child: Image.network('http://openweathermap.org/img/w/${icon}.png', height: 75,width: 100,fit: BoxFit.fill,),
+      child: Image.network('http://openweathermap.org/img/w/${icon}.png', height: 100,width: 100,fit: BoxFit.fill,),
     );
   }
 }

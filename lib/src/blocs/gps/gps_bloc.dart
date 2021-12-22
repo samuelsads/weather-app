@@ -4,11 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:wheater/src/blocs/blocs.dart';
-import 'package:wheater/src/models/weather_provider.dart';
-import 'package:wheater/src/pages/main_page.dart';
-import 'package:wheater/src/services/weather_services.dart';
+
 
 part 'gps_event.dart';
 part 'gps_state.dart';
@@ -76,7 +72,6 @@ class GpsBloc extends Bloc<GpsEvent, GpsState> {
         add(GpsAndPermissionEvent(
             isGpsEnabled: state.isGpsEnabled, isGpsPermissionGrandled: true));
         break;
-
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +10,7 @@ import 'package:wheater/src/models/weather_provider.dart';
 import 'package:wheater/src/services/weather_services.dart';
 import "package:wheater/src/utils/string_extension.dart";
 import 'package:wheater/src/widgets/icon_nigh_day_widget.dart';
+import 'package:wheater/src/widgets/load_information_widget.dart';
 import 'package:wheater/src/widgets/sunrise_sunset_widget.dart';
 import 'package:wheater/src/widgets/temperature_information.dart';
 
@@ -75,14 +75,11 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
                     if (state.isGpsPermissionGranted) {
                       loadingAlert(context, 'Buscando');
                       Position position = await gpsBloc.getLocation();
-                      final service = WeatherService();
+                      final blocWeather = BlocProvider.of<WeatherBloc>(context);
                       final response =
-                          await service.getWeatherByLocation(position);
+                          await blocWeather.findInformationByGps(position);
                       if (response.cod != 200) {
                         viewToastAlert("Ciudad no encontrada");
-                      } else {
-                        Provider.of<WeatherProvider>(context, listen: false)
-                            .response = response;
                       }
                       Navigator.pop(context);
                     } else {
@@ -114,26 +111,18 @@ class _MainPageState extends State<MainPage> with WidgetsBindingObserver {
   }
 }
 
-
-
-loadInformation(BuildContext context) async {
-  final service = WeatherService();
-  final bloc = BlocProvider.of<GpsBloc>(context);
-  Provider.of<WeatherProvider>(context, listen: false).response =
-      await service.getWeatherByZipCode('0', "");
-}
-
 class _WheaterBody extends StatelessWidget {
   const _WheaterBody({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final service = WeatherService();
-    //Provider.of<WeatherProvider>(context, listen:false);
-    loadInformation(context);
-    //Future.delayed(Duration(milliseconds: 1000));
-    return Builder(builder: (context) {
-      final data = Provider.of<WeatherProvider>(context, listen: true).response;
+    return BlocBuilder<WeatherBloc, WeatherState>(
+      builder: (context, state) {
+        if(!(state.isLoadInformation??false)){
+          return LoadInformation();
+        }
+      
+      final data = state.weather;
       DateTime now = DateTime.now();
       int sunrise = 0;
       int sunset = 0;
@@ -149,9 +138,14 @@ class _WheaterBody extends StatelessWidget {
       return Stack(
         children: [
           Container(
-          decoration: new BoxDecoration(image: new DecorationImage(image:  (now.isAfter(DateTime.fromMillisecondsSinceEpoch(
-                  (data?.sys.sunset ?? 0) * 1000)))? AssetImage('assets/night.jpeg') :AssetImage('assets/clouds.jpeg'), fit: BoxFit.fill)),
-        ),
+            decoration: new BoxDecoration(
+                image: new DecorationImage(
+                    image: (now.isAfter(DateTime.fromMillisecondsSinceEpoch(
+                            (data?.sys.sunset ?? 0) * 1000)))
+                        ? AssetImage('assets/night.jpeg')
+                        : AssetImage('assets/clouds.jpeg'),
+                    fit: BoxFit.fill)),
+          ),
           SingleChildScrollView(
             child: SafeArea(
               child: Column(
@@ -174,7 +168,8 @@ class _WheaterBody extends StatelessWidget {
                     children: [
                       SunriseSunset(
                           "Amanecer",
-                          new DateTime.fromMillisecondsSinceEpoch(sunrise * 1000),
+                          new DateTime.fromMillisecondsSinceEpoch(
+                              sunrise * 1000),
                           FontAwesomeIcons.sun,
                           Colors.yellow,
                           "AM"),
@@ -240,7 +235,9 @@ class _WheaterBody extends StatelessWidget {
                       TemperaturInformation(
                           icon: FontAwesomeIcons.cloudRain,
                           title: "Humedad ",
-                          data: (weatherInformation?.humidity ?? 0.0).toDouble())
+                          data:
+                              (weatherInformation?.humidity ?? 0.0).toDouble(),
+                              isPorcent: true,)
                     ],
                   )
                 ],
@@ -252,3 +249,5 @@ class _WheaterBody extends StatelessWidget {
     });
   }
 }
+
+
