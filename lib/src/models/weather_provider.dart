@@ -7,7 +7,7 @@ class WeatherProvider with ChangeNotifier{
   WeatherResponse ? _response;
 
   set response( WeatherResponse? response){
-    this._response = response;
+    _response = response;
     notifyListeners();
   }
 

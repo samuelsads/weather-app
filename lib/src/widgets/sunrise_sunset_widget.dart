@@ -14,7 +14,6 @@ class SunriseSunset extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("date: $subtitle");
     final TextStyle style = TextStyle(color: Colors.white);
     return Container(
       padding: EdgeInsets.all(5),
@@ -28,10 +27,10 @@ class SunriseSunset extends StatelessWidget {
           ),
           Text(
             this.title,
-            style: TextStyle(color: Colors.white, fontSize: 30),
+            style: TextStyle(color: Colors.white, fontSize: 20),
           ),
           Text(
-            '${DateFormat.Hms().format(this.subtitle)} ${this.suffix} ',
+            '${DateFormat.jms().format(this.subtitle)}',
             style: TextStyle(
                 fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
           )
